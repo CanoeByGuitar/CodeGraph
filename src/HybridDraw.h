@@ -18,12 +18,25 @@
 #define LightOrange    Vec4(255, 204, 153, 255) / 255.f
 
 
+#define Red1    Vec4(255, 0, 0, 255) / 255.f
+#define Red2    Vec4(255, 51, 51, 255) / 255.f
+#define Red3    Vec4(255, 102, 102, 255) / 255.f
+#define Red4    Vec4(255, 153, 153, 255) / 255.f
+#define Red5    Vec4(255, 204, 204, 255) / 255.f
+
+
+#define Blue1    Vec4(174, 107, 129, 255) / 255.f
+#define Blue2    Vec4(130, 45, 74, 255) / 255.f
+#define Blue3    Vec4(71, 85, 142, 255) / 255.f
+#define Blue4    Vec4(105, 130, 185, 255) / 255.f
+#define Blue5    Vec4(188, 202, 224, 255) / 255.f
+#define Blue6    Vec4(241, 239, 236, 255) / 255.f
 
 
 static float sDrawRectText(const Vec2& p, const std::string& text, const Color4& color = DarkRed,
                            int fontSize = 10) {
-    Vec2 lower = {p.x - 5, p.y - 2 * (float)fontSize};
-    Vec2 upper = {p.x + (float)fontSize * (float)text.size() * 1, p.y + (float)text.size() * 0.1};
+    Vec2 lower = {p.x - 5, p.y - 2.2 * (float)fontSize};
+    Vec2 upper = {p.x + (float)fontSize * (float)text.size() * 1, p.y + (float)fontSize * 0.1};
     static int flag = 0;
     if (!flag) {
         spdlog::debug("{} {} {} {}", lower.x, lower.y, upper.x, upper.y);
