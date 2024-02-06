@@ -1,0 +1,19 @@
+glfwCreateWindow()
+glClearColor()
+gDraw.Create()
+while(!glfwWindowShouldClose())
+    glViewport(0, 0, width, height)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    ImGui::NewFrame()
+    HierarchyCallStack cs
+    cs.ReadTxt(file)
+        mFuncs.emplace_back(level, line)
+    cs.Draw()
+        for(item : mFuncs)
+            sDrawRectText(p, str, fontSize)
+                gDraw.DrawPolygon
+                    mLinesImpl->AddVertex()
+                gDraw.DrawString
+                    ImGui::TextColored()
+        gDraw.Flush()
+

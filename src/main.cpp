@@ -133,7 +133,7 @@ int main() {
         }
 
         if (true) {
-            auto file = std::string(CURRENT_PROJECT_PATH) + "/resources/callstack.txt";
+            auto file = std::string(CURRENT_PROJECT_PATH) + "/resources/codegraph.txt";
             HierarchyCallStack cs;
             cs.ReadTxt(file);
             cs.Draw();

@@ -611,8 +611,9 @@ void Draw::DrawString(const Vec2& p,
     if(!gFonts[fontSize]){
         spdlog::info("No fontSize = {}. Use default fontSize = 14!", fontSize);
         ImGui::PushFont(gFonts[14]);
+    }else{
+        ImGui::PushFont(gFonts[fontSize]);
     }
-    ImGui::PushFont(gFonts[fontSize]);
     ImGui::Begin("Overlay",
                  nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs |
