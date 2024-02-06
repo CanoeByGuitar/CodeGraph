@@ -47,7 +47,16 @@ static void sCreateUI(GLFWwindow* window, const char* glslVersion = nullptr) {
 
 static void UpdateUI() {}
 
-int main() {
+int main(int argc, char* argv[]) {
+    std::string txtName = "codegraph";
+    if (argc != 3 && argc != 1){
+        spdlog::error("Flag not correct!");
+        return -1;
+    }
+    if (argc == 3){
+        std::string flagName = argv[1];
+        txtName = argv[2];
+    }
     spdlog::set_level(spdlog::level::info);
 
     gCamera.mWidth  = 1470;
@@ -133,7 +142,7 @@ int main() {
         }
 
         if (true) {
-            auto file = std::string(CURRENT_PROJECT_PATH) + "/resources/codegraph.txt";
+            auto file = std::string(CURRENT_PROJECT_PATH) + "resources/" + txtName + ".txt";
             HierarchyCallStack cs;
             cs.ReadTxt(file);
             cs.Draw();

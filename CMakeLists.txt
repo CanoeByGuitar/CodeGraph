@@ -10,6 +10,8 @@ set(GLFW_BUILD_TESTS OFF)
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
 include_directories(extern/spdlog/include)
 
 add_subdirectory(extern/glad)
@@ -17,6 +19,7 @@ add_subdirectory(extern/glfw)
 add_subdirectory(extern/imgui)
 add_subdirectory(extern/glm)
 
-
 add_subdirectory(src)
+
+
 
