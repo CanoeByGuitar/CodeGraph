@@ -1,0 +1,6 @@
+AssetToolsModule.Get().ImportAssets(Const TArray<FString>&,...)
+    TArray<UObject*> UAssetToolsImpl::ImportAssetsInternal()
+        TMap<FString, TArray<UFactory*>> ExtensionToFactoriesMap
+        Loop FileIdx
+            Factory->ResolveSupportedClass()
+            Factory->ImportObject(ImportAssetType, Filename);

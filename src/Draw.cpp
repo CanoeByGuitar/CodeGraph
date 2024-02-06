@@ -407,7 +407,7 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, mVboIds[1]);
         glBufferSubData(GL_ARRAY_BUFFER, 0, mCount * (int)sizeof(Color4), mColors.data());
 
-        spdlog::info("color: {} {} {} {}", mColors[1].x,  mColors[1].y,  mColors[1].z,  mColors[1].w);
+        spdlog::debug("color: {} {} {} {}", mColors[1].x,  mColors[1].y,  mColors[1].z,  mColors[1].w);
         glDrawArrays(GL_LINES, 0, mCount);
         sCheckGLError();
 
@@ -618,7 +618,8 @@ void Draw::DrawString(const Vec2& p,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs |
                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
     ImGui::SetCursorPos(ImVec2(ps.x, ps.y));
-    ImGui::TextColored(ImColor(230, 153, 153, 255), "%s", str.c_str());
+    ImGui::TextColored(ImColor(color.x , color.y, color.z, color.w),
+                       "%s", str.c_str());
     ImGui::End();
     ImGui::PopFont();
 }

@@ -8,6 +8,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "HybridDraw.h"
+#include "HierarchyCallStack.h"
 #include <spdlog/spdlog.h>
 
 
@@ -125,16 +126,23 @@ int main() {
 
         UpdateUI();
 
-        if (true) {
+        if (false) {
             sDrawRectText({50, 700}, "static void sDrawRectText(const Vec2& p, ...)");
             //            gDraw.DrawPoint({500, 500}, {255, 0, 0, 1}, 100);
             gDraw.Flush();
         }
 
         if (true) {
+            auto file = std::string(CURRENT_PROJECT_PATH) + "/resources/callstack.txt";
+            HierarchyCallStack cs;
+            cs.ReadTxt(file);
+            cs.Draw();
+        }
+
+        if (true) {
             static std::string buffer;
             buffer = std::to_string(1000.0 * frameTime.count()) + " ms.";
-            gDraw.DrawString(Vec2{0, 0}, buffer, 5.f);
+            gDraw.DrawString(Vec2{1350, 800}, buffer, 8.f);
         }
 
 
