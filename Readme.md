@@ -3,4 +3,4 @@
 1. Build project (`mkdir -B build && cd build && make`)
 2. Modify [describe file](resources/callstack.txt)
 
-[](resources/img.png)
+![img.png](resources%2Fimg.png)
