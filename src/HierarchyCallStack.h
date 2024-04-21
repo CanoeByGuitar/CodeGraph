@@ -63,8 +63,14 @@ void HierarchyCallStack::ReadTxt(const std::string& file, int version) {
             if (line.empty())
                 continue;
             auto level = sCountTabsInLine(line) / 4;
-            auto start = std::find_if(line.begin(), line.end(), [](char c) { return c != ' '; });
-            mFuncs.emplace_back(line.substr(std::distance(line.begin(), start)), level);
+            auto start = line.find_first_not_of(' ');
+            std::string realStr = line.substr(start);
+            if(realStr.size() >= 2 && realStr.substr(0, 2) == "//"){
+                continue;
+            }
+            mFuncs.emplace_back(realStr, level);
+//            auto start = std::find_if(line.begin(), line.end(), [](char c) { return c != ' '; });
+//            mFuncs.emplace_back(line.substr(std::distance(line.begin(), start)), level);
         }
     }
     inputFile.close();

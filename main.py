@@ -9,4 +9,4 @@ def run_cpp_program(filename: str = "codegraph"):
 
 
 if __name__ == "__main__":
-    run_cpp_program("codegraph")
+    run_cpp_program("fbxfactory")

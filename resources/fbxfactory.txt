@@ -1,0 +1,24 @@
+FImportFilesByPath::Run()
+    ...
+    // Files is location in Disk，DestinationPath is ue filesystem, here is /Game/MyContent
+    UAssetToolsImpl::ImportAssets(Files, DestinationPath)
+        FAssetImportParams Params
+        ImportAssetsInternal(Files, DestinationPath, FilesAndDestinations, Params)
+            TMap< FString, TArray<UFactory*> > ExtensionToFactoriesMap
+            UFactory* Factory = Cast<UFactory>(getCurrentFactory)
+            TArray<FString> FactoryExtensions
+            // Important : GetSupportedFileExtensions
+            Factory->GetSupportedFileExtensions(FactoryExtensions);
+            for(File : Files)  ExtensionToFactoriesMap.FindOrAdd(GetExtension(FileExtension))
+            ...
+            for(File : Files)
+                // Important : FactoryCanImport
+                if(!Factory->FactoryCanImport(File)) continue;
+                // Important : SupportedClass
+                UClass* ImportAssetType = Factory->SupportedClass;
+                // Important : ResolveSupportedClass
+                ImportAssetType = Factory->ResolveSupportedClass();
+                Factory->ImportObject(ImportAssetType, Filename, ...);
+                    UFactory::ImportObject();
+                    // Important: FactoryCreateFile
+                    UFbxFactory::FactoryCreateFile()
