@@ -276,7 +276,7 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, mVboIds[1]);
         glBufferSubData(GL_ARRAY_BUFFER, 0, mCount * (int)sizeof(Vec4), mColors.data());
 
-        glBindBuffer(GL_ARRAY_BUFFER, mVboIds[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, mVboIds[2]);
         glBufferSubData(GL_ARRAY_BUFFER, 0, mCount * (int)sizeof(float), mSizes.data());
 
         glEnable(GL_PROGRAM_POINT_SIZE);
@@ -601,7 +601,26 @@ void Draw::DrawPolygon(const std::vector<Vec2>& vertices, const Vec4& color) {
     }
 }
 
-void Draw::DrawCircle(const Vec2& center, float radius, const Vec4& color) {}
+void Draw::DrawCircle(const Vec2& center, float radius, const Vec4& color, const TV& scale, const TM& rotate) {
+    int segment = 36;
+    for(int i = 0; i < segment; i++){
+        double alpha_0 = (360.0 / segment * i) * 3.14 / 180.0;
+        double alpha_1 = (360.0 / segment * ((i + 1) % segment)) * 3.14 / 180.0;
+
+        Vec2 x0 = Vec2{radius * cos(alpha_0), radius * sin(alpha_0)} ;
+        Vec2 x1 = Vec2{radius * cos(alpha_1), radius * sin(alpha_1)};
+
+        glm::mat2 scaleMatrix = {scale.x(), 0, 0, scale.y()};
+
+        Eigen::Rotation2Dd rotation(rotate);
+        double theta = rotation.angle();
+        glm::mat2 rotationMatrix = {cos(theta), -sin(theta), sin(theta), cos(theta)};
+
+
+        mLinesImpl->AddVertex(rotationMatrix * scaleMatrix * x0 + center, color);
+        mLinesImpl->AddVertex(rotationMatrix * scaleMatrix * x1 + center, color);
+    }
+}
 
 void Draw::DrawString(const Vec2& p,
                       const std::string& str,

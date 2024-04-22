@@ -13,7 +13,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <string>
+#include <Eigen/Dense>
 
+using TV = Eigen::Vector2d;
+using TM = Eigen::Matrix2d;
 using Vec2   = glm::vec2;
 using Vec4   = glm::vec4;
 using Mat4   = glm::mat4x4;
@@ -52,7 +55,7 @@ public:
 
     void DrawPolygon(const std::vector<Vec2>& vertices, const Vec4& color);
 
-    void DrawCircle(const Vec2& center, float radius, const Vec4& color);
+    void DrawCircle(const Vec2& center, float radius, const Vec4& color, const TV& scale = TV::Zero(), const TM& rotate = TM::Zero());
 
     void DrawString(const Vec2& p, const std::string& str, int fontSize = 14,
                     const Color4& color = {230, 153, 153, 255});
