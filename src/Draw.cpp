@@ -613,7 +613,7 @@ void Draw::DrawCircle(const Vec2& center, float radius, const Vec4& color, const
         glm::mat2 scaleMatrix = {scale.x(), 0, 0, scale.y()};
 
         Eigen::Rotation2Dd rotation(rotate);
-        double theta = rotation.angle();
+        double theta = -rotation.angle();
         glm::mat2 rotationMatrix = {cos(theta), -sin(theta), sin(theta), cos(theta)};
 
 

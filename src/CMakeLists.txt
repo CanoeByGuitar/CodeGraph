@@ -20,7 +20,7 @@ find_package(Eigen3 REQUIRED)
 
 add_executable(sph ${SOURCE_FILES} sph_particle.cpp)
 target_include_directories(sph PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} Eigen3::Eigen)
-target_link_libraries(sph PUBLIC glfw imgui glad glm Eigen3::Eigen)
+target_link_libraries(sph PUBLIC glfw imgui glad glm Eigen3::Eigen partio)
 
 add_executable(svd svd.cpp)
 target_include_directories(svd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} Eigen3::Eigen)

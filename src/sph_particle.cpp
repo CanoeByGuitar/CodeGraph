@@ -13,29 +13,71 @@
 #include "Draw.h"
 #include <spdlog/spdlog.h>
 #include <Eigen/Dense>
+#include <partio/src/lib/Partio.h>
+#include <partio/src/lib/io/readers.h>
 
 using TV = Eigen::Vector2d;
 using TM = Eigen::Matrix2d;
 
+std::vector<TV> gParticles;
+
+void sReadParticles() {
+    const char*       filename = "/Users/wangchenhui/Downloads/particlesInfos_21.bgeo";
+    std::stringstream errStream;
+    auto              particlesData = Partio::readBGEO(filename, false, &errStream);
+
+    int                       num = particlesData->numParticles();
+    Partio::ParticleAttribute positionAttr;
+    bool        positionFound = particlesData->attributeInfo("position", positionAttr);
+    const auto* positions     = particlesData->data<float>(positionAttr, 0);
+    for (int i = 0; i < num; i++) {
+        gParticles.push_back(100.0 * TV{positions[3 * i], positions[3 * i + 1] - 6.0});
+    }
+    particlesData->release();
+}
+
 
 void sDrawSphParticles() {
     // generate particles
-    std::vector<TV> particles;
-    for (int i = 300; i < 1000; i += 20) {
-        for (int j = 50; j < 750; j += 20) {
-            particles.emplace_back(i, j);
-        }
+
+    double           h = 25;
+    double           r = 2 * h;
+    double  radius = 3;
+
+    if (gParticles.empty()) {
+
+#define bunny
+#ifdef bunny
+        sReadParticles();
+#else
+
+            for (int i = 300; i < 1000; i += 20) {
+                for (int j = 50; j < 750; j += 20) {
+                    gParticles.emplace_back(i, j);
+                }
+            }
+            h = 50;
+            r = 2 * h;
+            radius = 8;
+#endif
     }
-    int n = particles.size();
+    // draw points
+    std::for_each(gParticles.begin(), gParticles.end(), [](const TV& v) {
+        gDraw.DrawPoint({v.x(), v.y()}, Vec4(174, 107, 129, 255) / 255.f, 3);
+    });
+//    return;
+
+    int n = gParticles.size();
 
     // anistropic kernel
     // x_weight
-    double h = 50;
-    double r = 2 * h;
+
+
     std::vector<int> Nei(n, 0);
-    std::vector<TV> x_w(n, TV::Zero());
-    auto&           X = particles;
+    std::vector<TV>  x_w(n, TV::Zero());
+    auto&            X = gParticles;
     for (int i = 0; i < n; i++) {
+        spdlog::info("x_weight: {}", i);
         double w_ij_total = 0.0;
         for (int j = 0; j < n; j++) {
             auto x_ij = X[i] - X[j];
@@ -50,14 +92,15 @@ void sDrawSphParticles() {
     }
 
     // C
-    double kr    = 4;
-//    double ks    = 1;
+    double kr = 4;
+    //    double ks    = 1;
     double kn    = 0.5;
     int    N_eps = 20;
 
     std::vector<double> ks(n);
-    std::vector<TM> C(n, TM::Zero());
+    std::vector<TM>     C(n, TM::Zero());
     for (int i = 0; i < n; i++) {
+        spdlog::info("C: {}", i);
         double w_ij_total = 0.0;
         for (int j = 0; j < n; j++) {
             auto x_ij = X[i] - X[j];
@@ -72,7 +115,7 @@ void sDrawSphParticles() {
         ks[i] = sqrt(1.0 / C[i].determinant());
         C[i] *= ks[i];
 
-        if(Nei[i] < N_eps){
+        if (Nei[i] < N_eps) {
             C[i] = 0.5 * TM::Identity();
         }
     }
@@ -82,35 +125,30 @@ void sDrawSphParticles() {
     std::vector<TM> Rotate(n);
     std::vector<TV> Scale(n);
     for (int i = 0; i < n; i++) {
+        spdlog::info("SVD: {}", i);
         Eigen::JacobiSVD<Eigen::MatrixXd> svd(C[i], Eigen::ComputeThinU | Eigen::ComputeThinV);
-        TM                   R     = svd.matrixU();
-        TM                   Sigma = svd.singularValues().asDiagonal();
-        Rotate[i] = R;
-        double s0 =  Sigma(0, 0);
-        double s1 =  Sigma(1, 1);
+        TM                                R     = svd.matrixU();
+        TM                                Sigma = svd.singularValues().asDiagonal();
+        Rotate[i]                               = R;
+        double s0                               = Sigma(0, 0);
+        double s1                               = Sigma(1, 1);
         spdlog::info("{}  {}", s0, s1);
-//        s1  = std::max(s1, s0 / kr);
-        Scale[i] = { s0, s1 };
+        //        s1  = std::max(s1, s0 / kr);
+        Scale[i] = {s0, s1};
     }
 
 
 
 
-    // draw points
-    std::for_each(particles.begin(), particles.end(), [](const TV& v) {
-        gDraw.DrawPoint({v.x(), v.y()}, Vec4(174, 107, 129, 255) / 255.f, 10);
-    });
+
 
     // draw spheres
     for (int i = 0; i < n; i++) {
-        gDraw.DrawCircle(
-            {particles[i].x(),
-             particles[i].y()},
-            8,
-            Vec4(241, 239, 236, 255) / 255.f,
-            Scale[i],
-            Rotate[i]
-            );
+        gDraw.DrawCircle({gParticles[i].x(), gParticles[i].y()},
+                         radius,
+                         Vec4(241, 239, 236, 255) / 255.f,
+                         Scale[i],
+                         Rotate[i]);
     }
 
     gDraw.Flush();
@@ -187,7 +225,6 @@ int main(int argc, char* argv[]) {
 
     glfwGetWindowContentScale(gMainWindow, &sDisplayScale, &sDisplayScale);
     glfwMakeContextCurrent(gMainWindow);
-
     int version = gladLoadGL(glfwGetProcAddress);
     printf("GL %d.%d\n", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
     printf(
@@ -214,7 +251,8 @@ int main(int argc, char* argv[]) {
         glfwGetFramebufferSize(gMainWindow, &bufferWidth, &bufferHeight);
         glViewport(0, 0, bufferWidth, bufferHeight);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 
 
@@ -234,9 +272,14 @@ int main(int argc, char* argv[]) {
 
         UpdateUI();
 
-        sDrawSphParticles();
+        static int hasDrawFirstFrame = 0;
+        if(!hasDrawFirstFrame){
+            sDrawSphParticles();
+            hasDrawFirstFrame = 1;
+        }
 
-        if (true) {
+
+        if (false) {
             static std::string buffer;
             buffer = std::to_string(1000.0 * frameTime.count()) + " ms.";
             gDraw.DrawString(Vec2{1350, 800}, buffer, 8.f);
@@ -249,6 +292,10 @@ int main(int argc, char* argv[]) {
 
 
         glfwSwapBuffers(gMainWindow);
+
+
+
+
         glfwPollEvents();
 
         // Throttle to cap at 60Hz. This adaptive using a sleep adjustment. This could be improved
