@@ -30,7 +30,7 @@ void sReadParticles() {
     Partio::ParticleAttribute positionAttr;
     bool        positionFound = particlesData->attributeInfo("position", positionAttr);
     const auto* positions     = particlesData->data<float>(positionAttr, 0);
-    for (int i = 0; i < num; i++) {
+    for (int i = 0; i < 6527; i++) {
         gParticles.push_back(100.0 * TV{positions[3 * i], positions[3 * i + 1] - 6.0});
     }
     particlesData->release();
@@ -42,7 +42,7 @@ void sDrawSphParticles() {
 
     double           h = 25;
     double           r = 2 * h;
-    double  radius = 3;
+    double  radius = 5;
 
     if (gParticles.empty()) {
 

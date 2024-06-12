@@ -12,8 +12,8 @@ file(GLOB SOURCE_FILES
 
 
 add_executable(main ${SOURCE_FILES} main.cpp)
-target_include_directories(main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(main PUBLIC glfw imgui glad glm)
+target_include_directories(main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} Eigen3::Eigen)
+target_link_libraries(main PUBLIC glfw imgui glad glm Eigen3::Eigen)
 
 
 find_package(Eigen3 REQUIRED)
